@@ -10,8 +10,6 @@ use crate::server::AppState;
 pub fn create_router(state: AppState) -> Router {
     Router::new()
         .route("/", get(super::hello))
-        // 添加GET方式的系统时间查询
-        .route("/system/time", get(super::get_system_time))
         // 添加POST方式的情报查询
         .route("/intelligence/list", post(super::list_intelligence))
         // 添加POST方式的关联邮件查询
@@ -22,12 +20,6 @@ pub fn create_router(state: AppState) -> Router {
         .route("/intelligence/statistics", post(super::query_statistics))
         // 添加POST方式的命中邮件趋势查询
         .route("/intelligence/hit-emails-trend", post(super::query_hit_trend))
-        // 添加POST方式的情报加白操作
-        .route("/intelligence/whitelist", post(super::add_to_whitelist))
-        // 添加POST方式的情报加黑操作
-        .route("/intelligence/blacklist", post(super::add_to_blacklist))
-        // 添加POST方式的情报上报操作
-        .route("/intelligence/report", post(super::report_intelligence))
         // 添加POST方式的邮件EML下载
         .route("/email/download-eml", post(super::download_email_eml))
         // 添加POST方式的附件下载

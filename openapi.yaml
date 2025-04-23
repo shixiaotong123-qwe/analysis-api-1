@@ -155,81 +155,6 @@ paths:
         '500':
           description: 服务器内部错误
 
-  /intelligence/whitelist:
-    post:
-      tags:
-        - intelligence
-      summary: 情报加白
-      description: 将情报加入白名单
-      operationId: add_to_whitelist
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WhitelistRequest'
-      responses:
-        '200':
-          description: 成功将情报加入白名单
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionResponse'
-        '400':
-          description: 请求参数错误
-        '500':
-          description: 服务器内部错误
-
-  /intelligence/blacklist:
-    post:
-      tags:
-        - intelligence
-      summary: 将情报加入黑名单
-      description: 将情报加入黑名单
-      operationId: add_to_blacklist
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BlacklistRequest'
-      responses:
-        '200':
-          description: 请求成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionResponse'
-        '400':
-          description: 无效请求
-        '500':
-          description: 服务器内部错误
-
-  /intelligence/report:
-    post:
-      tags:
-        - intelligence
-      summary: 上报情报误报
-      description: 上报情报误报
-      operationId: report_intelligence
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReportRequest'
-      responses:
-        '200':
-          description: 请求成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionResponse'
-        '400':
-          description: 无效请求
-        '500':
-          description: 服务器内部错误
-
   /email/download-eml:
     post:
       tags:
@@ -279,23 +204,6 @@ paths:
                 format: binary
         '404':
           description: 附件不存在
-        '500':
-          description: 服务器内部错误
-
-  /system/time:
-    get:
-      tags:
-        - system
-      summary: 获取系统时间
-      description: 获取当前系统时间信息
-      operationId: get_system_time
-      responses:
-        '200':
-          description: 成功返回系统时间
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SystemTimeResponse'
         '500':
           description: 服务器内部错误
 
@@ -525,91 +433,6 @@ components:
           format: int64
           description: 总记录数
       description: 情报列表响应
-
-    # 加白请求参数
-    WhitelistRequest:
-      type: object
-      required:
-        - intelligence_id
-        - value
-      properties:
-        intelligence_id:
-          type: string
-          format: uuid
-          description: 情报ID
-        value:
-          type: string
-          description: 情报值
-        release_quarantine:
-          type: boolean
-          description: 是否放行隔离区相关邮件
-      description: 情报加白请求参数
-
-    # 加黑请求参数
-    BlacklistRequest:
-      type: object
-      required:
-        - intelligence_id
-        - value
-      properties:
-        intelligence_id:
-          type: string
-          format: uuid
-          description: 情报ID
-        value:
-          type: string
-          description: 情报值
-      description: 情报加黑请求参数
-
-    # 上报请求参数
-    ReportRequest:
-      type: object
-      required:
-        - id
-        - intelligence_id
-        - reason
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: 情报日志ID
-        intelligence_id:
-          type: string
-          format: uuid
-          description: 情报ID
-        reason:
-          type: string
-          description: 为什么认为是误报
-        provide_sample_email:
-          type: boolean
-          description: 是否提供误报邮件
-          default: false
-      description: 误报情报上报请求参数
-
-    # 情报操作响应
-    ActionResponse:
-      type: object
-      required:
-        - code
-        - data
-      properties:
-        code:
-          type: integer
-          description: 状态码
-        data:
-          $ref: '#/components/schemas/ActionResponseData'
-      description: 情报操作响应
-
-    # 情报操作响应数据
-    ActionResponseData:
-      type: object
-      required:
-        - msg
-      properties:
-        msg:
-          type: string
-          description: 消息
-      description: 情报操作响应数据
 
     # 关联邮件查询参数
     RelatedEmailsQuery:
@@ -966,30 +789,6 @@ components:
         data:
           $ref: '#/components/schemas/TrendData'
       description: 趋势响应
-
-    # 系统时间数据
-    SystemTimeData:
-      type: object
-      properties:
-        current_time:
-          type: string
-          format: date-time
-          description: 当前时间
-        timezone:
-          type: string
-          description: 时区
-      description: 系统时间数据
-
-    # 系统时间响应
-    SystemTimeResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: 状态码
-        data:
-          $ref: '#/components/schemas/SystemTimeData'
-      description: 系统时间响应
 
     # API结果
     ApiResult:

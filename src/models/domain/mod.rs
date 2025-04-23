@@ -4,5 +4,3 @@ pub mod intelligence;
 pub mod email;
 pub mod timeline;
 pub mod trend;
-pub mod system;
-pub mod intelligence_action; 

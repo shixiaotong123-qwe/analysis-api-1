@@ -40,14 +40,14 @@ impl TimelineService {
                 timestamp: now,
                 status: format!("{:?}", ActionType::Accept),
                 sender: "sender1@example.com".to_string(),
-                recipient: "recipient1@example.com".to_string(),
+                recipient: vec!["recipient1@example.com".to_string()],
             },
             TimelineEmail {
                 mail_id: 1002,
                 timestamp: now,
                 status: format!("{:?}", ActionType::Quarantine),
                 sender: "sender2@example.com".to_string(),
-                recipient: "recipient2@example.com".to_string(),
+                recipient: vec!["recipient2@example.com".to_string()],
             },
         ];
 

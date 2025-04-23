@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use tracing::{info, error};
+use tracing::{info};
 use std::sync::Arc;
 use crate::db::{ClickHouseClient, DbResult};
 use crate::models::domain::statistics::{ChangeDirection, StatisticsItem};

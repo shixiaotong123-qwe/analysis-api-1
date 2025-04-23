@@ -13,7 +13,7 @@ pub struct TimelineEmail {
     /// 发件人
     pub sender: String,
     /// 收件人
-    pub recipient: String,
+    pub recipient: Vec<String>,
 }
 
 /// 攻击时间线数据 - 领域模型

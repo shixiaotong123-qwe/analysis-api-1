@@ -22,7 +22,7 @@ pub struct TimelineEmailResponse {
     /// 发件人
     pub sender: String,
     /// 收件人
-    pub recipient: String,
+    pub recipient: Vec<String>,
 }
 
 // 从领域模型转换为API模型

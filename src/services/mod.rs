@@ -7,6 +7,7 @@ pub mod email_service;
 pub mod intelligence_service;
 pub mod timeline_service;
 pub mod trend_service;
+pub mod intelligence_action_service;
 
 // 公开服务结构体
 pub use system_service::SystemService;
@@ -15,6 +16,7 @@ pub use email_service::EmailService;
 pub use intelligence_service::IntelligenceService;
 pub use timeline_service::TimelineService;
 pub use trend_service::TrendService;
+pub use intelligence_action_service::IntelligenceActionService;
 
 use std::sync::Arc;
 use crate::db::ClickHouseClient;
@@ -28,6 +30,7 @@ pub struct AppServices {
     pub intelligence: IntelligenceService,
     pub timeline: TimelineService,
     pub trend: TrendService,
+    pub intelligence_action: IntelligenceActionService,
 }
 
 impl AppServices {
@@ -38,7 +41,8 @@ impl AppServices {
             email: EmailService::new(db_client.clone()),
             intelligence: IntelligenceService::new(db_client.clone()),
             timeline: TimelineService::new(db_client.clone()),
-            trend: TrendService::new(db_client),
+            trend: TrendService::new(db_client.clone()),
+            intelligence_action: IntelligenceActionService::new(db_client),
         }
     }
 } 

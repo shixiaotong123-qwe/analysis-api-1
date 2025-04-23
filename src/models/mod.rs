@@ -22,4 +22,8 @@ pub use api::timeline::{TimelineQuery, TimelineResponse, TimelineData, TimelineE
 
 // 导出趋势相关模型
 pub use domain::trend::{Trend, TrendPoint};
-pub use api::trend::{TrendQuery, TrendResponse, TrendData, TrendPointResponse}; 
+pub use api::trend::{TrendQuery, TrendResponse, TrendData, TrendPointResponse};
+
+// 导出情报操作相关模型
+pub use domain::intelligence_action::{WhitelistAction, BlacklistAction, ReportAction};
+pub use api::intelligence_action::{WhitelistRequest, BlacklistRequest, ReportRequest, ActionResponse, ActionResponseData}; 

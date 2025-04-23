@@ -6,7 +6,7 @@ pub mod api;     // API模型
 
 // 重新导出常用类型，方便直接使用
 pub use domain::statistics::{ChangeDirection, StatisticsItem};
-pub use api::statistics::{StatisticsQuery, StatisticsResponse, StatisticsItemResponse};
+pub use api::statistics::{StatisticsQuery, StatisticsResponse};
 
 // 导出邮件相关模型
 pub use domain::email::{Email, Attachment, Url, EmailFilter};
@@ -19,7 +19,3 @@ pub use api::intelligence::{IntelligenceQueryParams, IntelligenceListResponse, I
 // 导出时间线相关模型
 pub use domain::timeline::{Timeline, TimelineEmail};
 pub use api::timeline::{TimelineQuery, TimelineResponse, TimelineData, TimelineEmailResponse};
-
-// 导出趋势相关模型
-pub use domain::trend::{Trend, TrendPoint};
-pub use api::trend::{TrendQuery, TrendResponse, TrendData, TrendPointResponse};

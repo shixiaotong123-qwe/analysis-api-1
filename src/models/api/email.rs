@@ -6,9 +6,9 @@ use crate::models::domain::email::{Email, Attachment, Url};
 #[derive(Debug, Deserialize)]
 pub struct RelatedEmailsQuery {
     /// 开始时间
-    pub start_time: Option<String>,
+    pub start_time: DateTime<Utc>,
     /// 结束时间
-    pub end_time: Option<String>,
+    pub end_time: DateTime<Utc>,
     /// 情报ID
     pub intelligence_id: String,
     /// 邮件状态

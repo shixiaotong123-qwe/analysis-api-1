@@ -77,10 +77,10 @@ pub enum SortOrder {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct IntelligenceFilter {
     /// 开始时间
-    pub start_time: Option<DateTime<Utc>>,
+    pub start_time: DateTime<Utc>,
     
     /// 结束时间
-    pub end_time: Option<DateTime<Utc>>,
+    pub end_time: DateTime<Utc>,
     
     /// 情报来源
     pub source: Option<SourceType>,

@@ -12,11 +12,11 @@ use crate::models::domain::intelligence::{
 pub struct IntelligenceQueryParams {
     /// 开始时间
     #[serde(rename = "start_time")]
-    pub start_time: Option<DateTime<Utc>>,
+    pub start_time: DateTime<Utc>,
     
     /// 结束时间
     #[serde(rename = "end_time")]
-    pub end_time: Option<DateTime<Utc>>,
+    pub end_time: DateTime<Utc>,
     
     /// 情报来源
     #[serde(rename = "source")]

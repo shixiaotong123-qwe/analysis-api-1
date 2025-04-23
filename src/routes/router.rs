@@ -18,8 +18,6 @@ pub fn create_router(state: AppState) -> Router {
         .route("/intelligence/timeline", post(super::query_timeline))
         // 添加POST方式的统计数据查询
         .route("/intelligence/statistics", post(super::query_statistics))
-        // 添加POST方式的命中邮件趋势查询
-        .route("/intelligence/hit-emails-trend", post(super::query_hit_trend))
         // 添加POST方式的邮件EML下载
         .route("/email/download-eml", post(super::download_email_eml))
         // 添加POST方式的附件下载

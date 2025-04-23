@@ -1,0 +1,80 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "value": "example.com",
+      "description": "恶意域名，用于钓鱼攻击",
+      "intelligence_type": "domain",
+      "sub_type": "恶意域名",
+      "source": "本地情报",
+      "urgency": "高",
+      "hit_emails": 15,
+      "impact_users": 8,
+      "first_found_time": "2023-02-15T08:30:00Z",
+      "latest_hits_time": "2023-09-22T14:45:00Z",
+      "status": {
+        "is_white": false,
+        "is_black": true,
+        "is_report": true
+      },
+      "basic_info": {
+        "file_name": null,
+        "file_path": null,
+        "file_size": null,
+        "file_type": null
+      },
+      "contribution_unit": 3,
+      "industry_distribution": [
+        {
+          "industry_name": "金融",
+          "hit_percentage": 60.0
+        },
+        {
+          "industry_name": "教育",
+          "hit_percentage": 30.0
+        },
+        {
+          "industry_name": "政府",
+          "hit_percentage": 10.0
+        }
+      ]
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "value": "malware.exe",
+      "description": "恶意木马文件",
+      "intelligence_type": "file",
+      "sub_type": "木马",
+      "source": "本地情报",
+      "urgency": "高",
+      "hit_emails": 8,
+      "impact_users": 4,
+      "first_found_time": "2023-03-10T09:15:00Z",
+      "latest_hits_time": "2023-08-18T11:20:00Z",
+      "status": {
+        "is_white": false,
+        "is_black": true,
+        "is_report": true
+      },
+      "basic_info": {
+        "file_name": "malware.exe",
+        "file_path": "/uploads/malware.exe",
+        "file_size": 2560000,
+        "file_type": "application/x-msdownload"
+      },
+      "contribution_unit": 2,
+      "industry_distribution": [
+        {
+          "industry_name": "金融",
+          "hit_percentage": 75.0
+        },
+        {
+          "industry_name": "制造",
+          "hit_percentage": 25.0
+        }
+      ]
+    }
+  ],
+  "total": 245
+} 

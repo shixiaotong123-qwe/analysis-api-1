@@ -1,0 +1,51 @@
+{
+  "code": 200,
+  "total": 25,
+  "data": [
+    {
+      "id": "mail-12345",
+      "timestamp": "2023-01-15T08:30:25Z",
+      "subject": "重要通知：请更新您的账号信息",
+      "sender": "info@fake-bank.com",
+      "recipients": ["user1@example.com", "user2@example.com"],
+      "attachments": [
+        {
+          "id": "att-1001",
+          "filename": "update_form.docx",
+          "file_path": "/storage/attachments/update_form.docx",
+          "size": 125000,
+          "file_extension": "docx",
+          "md5": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+        }
+      ],
+      "urls": [
+        {
+          "id": "url-2001",
+          "url": "https://fake-bank.com/update",
+          "path": "/update"
+        }
+      ],
+      "content": "尊敬的客户，您的账号需要进行紧急更新，请点击下方链接...",
+      "status": "blocked",
+      "code": "MIME-Version: 1.0\nContent-Type: multipart/mixed; boundary=\"boundary\"\n..."
+    },
+    {
+      "id": "mail-12346",
+      "timestamp": "2023-01-16T14:45:10Z",
+      "subject": "安全警告：您的账户已被锁定",
+      "sender": "security@phishing-site.com",
+      "recipients": ["user3@example.com"],
+      "attachments": [],
+      "urls": [
+        {
+          "id": "url-2002",
+          "url": "https://phishing-site.com/unlock",
+          "path": "/unlock"
+        }
+      ],
+      "content": "您的账户因为安全原因被锁定，请点击以下链接解锁...",
+      "status": "blocked",
+      "code": "MIME-Version: 1.0\nContent-Type: text/html; charset=UTF-8\n..."
+    }
+  ]
+} 

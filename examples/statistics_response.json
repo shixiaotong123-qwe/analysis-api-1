@@ -1,0 +1,35 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "title": "命中情报总数",
+      "current_total": 156,
+      "previous_total": 125,
+      "change_direction": "increase",
+      "change_value": 31,
+      "trend_x": ["1月1日", "1月8日", "1月15日", "1月22日", "1月29日"],
+      "trend_y": [25, 30, 35, 38, 28],
+      "apt_count": 55,
+      "black_count": 72,
+      "custom_count": 29
+    },
+    {
+      "title": "命中邮件总数",
+      "current_total": 320,
+      "previous_total": 340,
+      "change_direction": "decrease",
+      "change_value": 20,
+      "trend_x": ["1月1日", "1月8日", "1月15日", "1月22日", "1月29日"],
+      "trend_y": [65, 70, 60, 65, 60]
+    },
+    {
+      "title": "影响用户数",
+      "current_total": 45,
+      "previous_total": 45,
+      "change_direction": "unchanged",
+      "change_value": 0,
+      "trend_x": ["1月1日", "1月8日", "1月15日", "1月22日", "1月29日"],
+      "trend_y": [9, 10, 12, 8, 6]
+    }
+  ]
+} 

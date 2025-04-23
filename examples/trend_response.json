@@ -1,0 +1,34 @@
+{
+  "code": 200,
+  "data": {
+    "x_axis": [
+      "2023-01-01",
+      "2023-01-02",
+      "2023-01-03",
+      "2023-01-04",
+      "2023-01-05"
+    ],
+    "y_axis": [
+      {
+        "hit_emails": 10,
+        "hit_intelligence": 5
+      },
+      {
+        "hit_emails": 20,
+        "hit_intelligence": 8
+      },
+      {
+        "hit_emails": 15,
+        "hit_intelligence": 6
+      },
+      {
+        "hit_emails": 30,
+        "hit_intelligence": 12
+      },
+      {
+        "hit_emails": 25,
+        "hit_intelligence": 10
+      }
+    ]
+  }
+} 

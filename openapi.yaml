@@ -1,0 +1,659 @@
+openapi: 3.0.3
+info:
+  title: 情报分析API
+  description: 用于情报分析和查询的API服务
+  version: 1.0.0
+  contact:
+    name: API开发团队
+servers:
+  - url: http://localhost:3000
+    description: 开发环境服务器
+paths:
+  /system/time:
+    get:
+      summary: 获取系统时间
+      description: 返回当前系统时间信息
+      operationId: getSystemTime
+      tags:
+        - 系统
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemTimeResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            text/plain:
+              schema:
+                type: string
+                
+  /intelligence/list:
+    post:
+      summary: 查询情报列表
+      description: 根据过滤条件查询情报列表
+      operationId: listIntelligence
+      tags:
+        - 情报
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntelligenceQueryParams'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntelligenceListResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            text/plain:
+              schema:
+                type: string
+  
+  /intelligence/related-emails:
+    post:
+      summary: 查询关联邮件
+      description: 查询与情报关联的邮件列表
+      operationId: queryRelatedEmails
+      tags:
+        - 情报
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelatedEmailsQuery'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedEmailsResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            text/plain:
+              schema:
+                type: string
+  
+  /intelligence/timeline:
+    post:
+      summary: 查询攻击时间线
+      description: 查询情报相关的攻击时间线
+      operationId: queryTimeline
+      tags:
+        - 情报
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimelineQuery'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            text/plain:
+              schema:
+                type: string
+  
+  /intelligence/statistics:
+    post:
+      summary: 查询统计数据
+      description: 查询情报相关的统计数据
+      operationId: queryStatistics
+      tags:
+        - 情报
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatisticsQuery'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            text/plain:
+              schema:
+                type: string
+                
+  /intelligence/hit-emails-trend:
+    post:
+      summary: 查询命中邮件趋势
+      description: 查询情报命中邮件的时间趋势
+      operationId: queryHitTrend
+      tags:
+        - 情报
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrendQuery'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrendResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  schemas:
+    SystemTimeResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          type: object
+          properties:
+            current_time:
+              type: string
+              format: date-time
+              description: 当前系统时间
+            timezone:
+              type: string
+              description: 时区信息
+    
+    IntelligenceQueryParams:
+      type: object
+      properties:
+        start_time:
+          type: string
+          format: date-time
+          description: 开始时间
+        end_time:
+          type: string
+          format: date-time
+          description: 结束时间
+        source:
+          type: string
+          enum: [PUBLIC, PRIVATE, THIRD_PARTY]
+          description: 情报来源
+        intelligence_type:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: "情报类型，格式为: { \"account\": [], \"domain\": [], \"url\": [], \"file\": [] }"
+        status:
+          type: object
+          properties:
+            isWhite:
+              type: boolean
+              default: false
+              description: 是否已加入白名单
+            isBlack:
+              type: boolean
+              default: false
+              description: 是否已加入黑名单
+            isReport:
+              type: boolean
+              default: false
+              description: 是否已上报
+        filter:
+          type: string
+          description: 过滤值，用于模糊搜索情报值
+        sort_by:
+          type: string
+          enum: [LATEST_HITS_TIME, FIRST_FOUND_TIME, HIT_EMAILS, IMPACT_USERS]
+          default: LATEST_HITS_TIME
+          description: 排序字段
+        sort_order:
+          type: string
+          enum: [ASC, DESC]
+          default: DESC
+          description: 排序方向
+        page_size:
+          type: integer
+          default: 10
+          description: 分页大小
+        page:
+          type: integer
+          default: 0
+          description: 页码
+    
+    IntelligenceStatus:
+      type: object
+      properties:
+        is_white:
+          type: boolean
+          description: 是否已加入白名单
+        is_black:
+          type: boolean
+          description: 是否已加入黑名单
+        is_report:
+          type: boolean
+          description: 是否已上报
+    
+    BasicInfo:
+      type: object
+      properties:
+        register_time:
+          type: string
+          format: date-time
+          description: 注册时间
+        ip_address:
+          type: string
+          description: IP地址
+        location:
+          type: string
+          description: 位置信息
+        isp:
+          type: string
+          description: ISP服务商
+    
+    IndustryDistribution:
+      type: object
+      properties:
+        industry:
+          type: string
+          description: 行业名称
+        count:
+          type: integer
+          description: 命中次数
+    
+    IntelligenceListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 情报日志ID
+        intelligence_id:
+          type: string
+          format: uuid
+          description: 情报ID
+        value:
+          type: string
+          description: 情报值
+        description:
+          type: string
+          description: 情报描述
+        intelligence_type:
+          type: string
+          enum: [ACCOUNT, DOMAIN, URL, FILE]
+          description: 情报主类型
+        sub_type:
+          type: string
+          description: 情报子类型
+        source:
+          type: string
+          description: 情报来源
+        urgency:
+          type: string
+          description: 紧急程度
+        hit_emails:
+          type: integer
+          description: 命中邮件数
+        impact_users:
+          type: integer
+          description: 影响用户数
+        first_found_time:
+          type: string
+          format: date-time
+          description: 首次发现时间
+        latest_hits_time:
+          type: string
+          format: date-time
+          description: 最新命中时间
+        status:
+          $ref: '#/components/schemas/IntelligenceStatus'
+        basic_info:
+          $ref: '#/components/schemas/BasicInfo'
+        contribution_unit:
+          type: integer
+          description: 贡献单位
+        industry_distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndustryDistribution'
+    
+    IntelligenceListResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntelligenceListItem'
+        total:
+          type: integer
+          description: 总记录数
+    
+    RelatedEmailsQuery:
+      type: object
+      required:
+        - intelligence_id
+      properties:
+        start_time:
+          type: string
+          format: date-time
+          description: 开始时间
+        end_time:
+          type: string
+          format: date-time
+          description: 结束时间
+        intelligence_id:
+          type: string
+          description: 情报ID
+        status:
+          type: string
+          description: 邮件状态
+        page:
+          type: integer
+          default: 0
+          description: 页码
+        page_size:
+          type: integer
+          default: 10
+          description: 每页大小
+    
+    AttachmentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 附件ID
+        filename:
+          type: string
+          description: 文件名
+        file_path:
+          type: string
+          description: 文件路径
+        size:
+          type: integer
+          format: int64
+          description: 文件大小（字节）
+        file_extension:
+          type: string
+          description: 文件扩展名
+        md5:
+          type: string
+          description: 文件MD5值
+    
+    UrlResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: URL ID
+        url:
+          type: string
+          description: URL地址
+        path:
+          type: string
+          description: URL路径
+    
+    EmailResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 邮件ID
+        timestamp:
+          type: string
+          format: date-time
+          description: 邮件时间
+        subject:
+          type: string
+          description: 主题
+        sender:
+          type: string
+          description: 发件人
+        recipients:
+          type: array
+          items:
+            type: string
+          description: 收件人列表
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentResponse'
+          description: 附件列表
+        urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/UrlResponse'
+          description: URL列表
+        content:
+          type: string
+          description: 邮件内容
+        status:
+          type: string
+          description: 邮件状态
+        source_code:
+          type: string
+          description: 邮件源代码
+    
+    RelatedEmailsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        total:
+          type: integer
+          description: 总记录数
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailResponse'
+          description: 邮件列表
+    
+    TimelineQuery:
+      type: object
+      required:
+        - intelligence_id
+      properties:
+        intelligence_id:
+          type: string
+          format: uuid
+          description: 情报ID
+    
+    TimelineEmailResponse:
+      type: object
+      properties:
+        mail_id:
+          type: integer
+          format: int64
+          description: 邮件ID
+        timestamp:
+          type: string
+          format: date-time
+          description: 邮件时间
+        status:
+          type: string
+          description: 邮件状态
+        sender:
+          type: string
+          description: 发件人
+        recipient:
+          type: string
+          description: 收件人
+    
+    TimelineData:
+      type: object
+      properties:
+        first_found_time:
+          type: string
+          format: date-time
+          description: 情报首次发现时间
+        source:
+          type: string
+          description: 情报来源
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineEmailResponse'
+          description: 相关邮件列表
+    
+    TimelineResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          $ref: '#/components/schemas/TimelineData'
+    
+    StatisticsQuery:
+      type: object
+      required:
+        - start_time
+        - end_time
+      properties:
+        start_time:
+          type: string
+          format: date-time
+          description: 开始时间
+        end_time:
+          type: string
+          format: date-time
+          description: 结束时间
+    
+    ChangeDirectionResponse:
+      type: string
+      enum:
+        - increase
+        - decrease
+        - unchanged
+      description: 变化方向
+    
+    StatisticsItemResponse:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 名称
+        current_total:
+          type: integer
+          format: int64
+          description: 当前周期总数
+        previous_total:
+          type: integer
+          format: int64
+          description: 上一周期总数
+        change_direction:
+          $ref: '#/components/schemas/ChangeDirectionResponse'
+        change_value:
+          type: integer
+          format: int64
+          description: 变化绝对值
+        trend_x:
+          type: array
+          items:
+            type: string
+          description: 趋势图横轴数据（时间点）
+        trend_y:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: 趋势图纵轴数据（数值）
+        apt_count:
+          type: integer
+          format: int64
+          description: APT数量
+        black_count:
+          type: integer
+          format: int64
+          description: 黑产组织数量
+        custom_count:
+          type: integer
+          format: int64
+          description: 自定义情报总数量
+    
+    StatisticsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatisticsItemResponse'
+          description: 统计数据列表
+    
+    TrendQuery:
+      type: object
+      required:
+        - start_time
+        - end_time
+      properties:
+        start_time:
+          type: string
+          format: date-time
+          description: 开始时间
+        end_time:
+          type: string
+          format: date-time
+          description: 结束时间
+    
+    TrendPointResponse:
+      type: object
+      properties:
+        hit_emails:
+          type: integer
+          format: int64
+          description: 命中邮件数
+        hit_intelligence:
+          type: integer
+          format: int64
+          description: 命中情报数
+    
+    TrendData:
+      type: object
+      properties:
+        x_axis:
+          type: array
+          items:
+            type: string
+          description: 横坐标（时间点）
+        y_axis:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrendPointResponse'
+          description: 纵坐标（数据点）
+    
+    TrendResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          $ref: '#/components/schemas/TrendData' 

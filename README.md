@@ -1,92 +1,177 @@
 # analysis-api
 
+一个使用Axum框架构建的HTTP API服务器，集成了OpenTelemetry进行分布式追踪和ClickHouse数据库进行数据存储与分析。
 
+## 功能特点
 
-## Getting started
+- 使用Axum构建的HTTP服务器
+- 集成OpenTelemetry进行分布式追踪
+- 使用ClickHouse数据库进行高性能数据存储和分析
+- 提供基本的RESTful API端点
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 安装依赖
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+项目需要以下依赖：
+- Rust环境
+- 支持OpenTelemetry OTLP协议的后端收集器（如Jaeger）
+- ClickHouse数据库服务器
 
-## Add your files
+## 运行方式
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### 1. 启动OpenTelemetry收集器
+
+使用Docker运行Jaeger作为收集器：
+
+```bash
+docker run -d -p4317:4317 -p16686:16686 jaegertracing/all-in-one:latest
+```
+
+### 2. 配置环境变量
+
+创建一个`.env`文件，包含以下配置：
 
 ```
-cd existing_repo
-git remote add origin https://git.relaxcloud.cn/m01/analysis-api.git
-git branch -M main
-git push -uf origin main
+# 服务器配置
+SERVER_IP=127.0.0.1
+SERVER_PORT=6000
+
+# Jaeger配置
+JAEGER_ENDPOINT=http://localhost:4317
+
+# 数据库配置
+DB_URL=http://localhost:8123
+DB_USERNAME=你的用户名
+DB_PASSWORD=你的密码
+DB_NAME=你的数据库名
 ```
 
-## Integrate with your tools
+### 3. 构建并运行服务
 
-- [ ] [Set up project integrations](https://git.relaxcloud.cn/m01/analysis-api/-/settings/integrations)
+```bash
+cargo run
+```
 
-## Collaborate with your team
+服务将监听在 http://127.0.0.1:6000
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### 4. 测试API
 
-## Test and Deploy
+- 访问首页: `GET http://127.0.0.1:6000/`
+- Hello World: `GET http://127.0.0.1:6000/hello`
+- 创建用户: `POST http://127.0.0.1:6000/users`
+- 记录事件: `POST http://127.0.0.1:6000/events`
+- 获取事件计数: `POST http://127.0.0.1:6000/events/count`
 
-Use the built-in continuous integration in GitLab.
+示例请求创建用户：
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```bash
+curl -X POST http://127.0.0.1:6000/users \
+  -H "Content-Type: application/json" \
+  -d '{"username": "测试用户", "email": "test@example.com"}'
+```
 
-***
+示例请求记录事件：
 
-# Editing this README
+```bash
+curl -X POST http://127.0.0.1:6000/events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 1,
+    "event_type": "login",
+    "payload": {"device": "mobile", "location": "beijing"},
+    "ip_address": "192.168.1.1",
+    "user_agent": "Mozilla/5.0"
+  }'
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### 5. 查看追踪数据
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+在浏览器中访问Jaeger UI：http://localhost:16686/
 
-## Name
-Choose a self-explaining name for your project.
+### 6. 查询ClickHouse数据
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+使用ClickHouse客户端或HTTP接口查询数据：
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```bash
+# 使用HTTP接口查询示例
+curl "http://localhost:8123/?query=SELECT+count(*)+FROM+user_events"
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## 问题排查
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+如果遇到以下问题：
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+1. OpenTelemetry特性相关错误
+   - 确保在Cargo.toml中正确配置了features
+   - `rt-tokio`特性应该在`opentelemetry_sdk`而不是`opentelemetry`包中
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+2. 无法连接到Jaeger
+   - 确保Jaeger容器正在运行
+   - 检查防火墙是否允许4317端口的连接
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+3. Axum服务器启动错误
+   - Axum 0.7+ 版本中，使用`axum::serve(listener, app)`而不是`Server::bind(&addr).serve(app.into_make_service())`
+   - 需要先创建一个`TcpListener`再传递给`serve`函数
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+4. OpenTelemetry导出器配置错误
+   - 使用`.build_span_exporter()?`完成导出器的构建
+   - 使用`with_config`和`trace::config()`配置采样器和资源
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+5. HTTP客户端错误 (`Error: ExportFailed(NoHttpClient)`)
+   - 在Cargo.toml中添加`reqwest-client`特性：
+     ```toml
+     opentelemetry-otlp = { version = "0.14", features = ["trace", "http-proto", "reqwest-client"] }
+     ```
+   - 在代码中明确指定HTTP协议：
+     ```rust
+     .with_protocol(opentelemetry_otlp::Protocol::HttpBinary)
+     ```
+   - 如果HTTP方法仍然失败，尝试使用gRPC：
+     ```toml
+     opentelemetry-otlp = { version = "0.14", features = ["trace", "grpc-tonic"] }
+     ```
+     ```rust
+     let exporter = opentelemetry_otlp::new_exporter()
+         .tonic()
+         .with_endpoint("http://localhost:4317")
+         .build_span_exporter()?;
+     ```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+6. ClickHouse连接错误
+   - 确保ClickHouse服务器正在运行
+   - 检查防火墙是否允许数据库端口的连接
+   - 确保数据库连接参数配置正确
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## 数据库架构
 
-## License
-For open source projects, say how it is licensed.
+### 用户事件表 (user_events)
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+| 列名 | 类型 | 描述 |
+|------|------|------|
+| event_id | UUID | 事件唯一标识符 |
+| user_id | UInt64 | 用户ID |
+| event_type | String | 事件类型 |
+| payload | String | 事件数据（JSON格式） |
+| timestamp | DateTime | 事件时间 |
+| ip_address | Nullable(String) | IP地址 |
+| user_agent | Nullable(String) | 用户代理 |
+
+### 分析结果表 (analysis_results)
+
+| 列名 | 类型 | 描述 |
+|------|------|------|
+| result_id | UUID | 结果唯一标识符 |
+| analysis_name | String | 分析名称 |
+| result_data | String | 结果数据（JSON格式） |
+| created_at | DateTime | 创建时间 |
+| updated_at | DateTime | 更新时间 |
+| parameters | Nullable(String) | 分析参数（JSON格式） |
+
+## 技术栈
+
+- [Axum](https://github.com/tokio-rs/axum) - Tokio的Web框架
+- [Tokio](https://github.com/tokio-rs/tokio) - 异步运行时
+- [OpenTelemetry](https://opentelemetry.io/) - 观测平台
+- [tracing-opentelemetry](https://github.com/tokio-rs/tracing-opentelemetry) - Tracing与OpenTelemetry的集成
+- [ClickHouse](https://clickhouse.com/) - 高性能列式数据库
+- [clickhouse-rs](https://github.com/loyd/clickhouse-rs) - ClickHouse Rust客户端
+- [dotenv](https://github.com/dotenv-rs/dotenv) - 环境变量管理 

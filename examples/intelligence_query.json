@@ -1,0 +1,20 @@
+{
+  "start_time": "2023-01-01T00:00:00Z",
+  "end_time": "2023-12-31T23:59:59Z",
+  "source": "local",
+  "intelligence_type": {
+    "domain": ["恶意域名", "钓鱼域名"],
+    "url": ["恶意URL"],
+    "file": ["病毒", "木马"]
+  },
+  "status": {
+    "isWhite": false,
+    "isBlack": true,
+    "isReport": false
+  },
+  "filter": "example",
+  "sort_by": "latest_hits_time",
+  "sort_order": "desc",
+  "page_size": 20,
+  "page": 1
+} 

@@ -27,16 +27,116 @@ pub enum IntelligenceType {
     File,
 }
 
+/// 账号子类型
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[serde(rename_all = "camelCase")]
+pub enum AccountSubType {
+    /// 傀儡账号
+    Puppet,
+    /// 无效账号
+    Invalid,
+    /// 伪造账号
+    Fake,
+    /// 品牌仿冒账号
+    BrandImitation,
+    /// 匿名账号
+    Anonymous,
+    /// 滥用账号
+    Abuse,
+    /// APT账号
+    Apt,
+    /// 黑灰产账号
+    BlackIndustry,
+}
+
+impl AsRef<str> for AccountSubType {
+    fn as_ref(&self) -> &str {
+        match self {
+            Self::Puppet => "傀儡账号",
+            Self::Invalid => "无效账号",
+            Self::Fake => "伪造账号",
+            Self::BrandImitation => "品牌仿冒账号",
+            Self::Anonymous => "匿名账号", 
+            Self::Abuse => "滥用账号",
+            Self::Apt => "APT账号",
+            Self::BlackIndustry => "黑灰产账号",
+        }
+    }
+}
+
+/// 域名子类型
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[serde(rename_all = "camelCase")]
+pub enum DomainSubType {
+    /// 品牌仿冒域名
+    BrandImitation,
+    /// 攻击者注册的域名
+    AttackerRegistered,
+    /// 匿名邮箱域名
+    AnonymousEmail,
+    /// 无效域名
+    Invalid,
+}
+
+impl AsRef<str> for DomainSubType {
+    fn as_ref(&self) -> &str {
+        match self {
+            Self::BrandImitation => "品牌仿冒域名",
+            Self::AttackerRegistered => "攻击者注册的域名",
+            Self::AnonymousEmail => "匿名邮箱域名",
+            Self::Invalid => "无效域名",
+        }
+    }
+}
+
+/// URL子类型
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[serde(rename_all = "camelCase")]
+pub enum UrlSubType {
+    /// 钓鱼欺诈
+    Phishing,
+    /// 品牌仿冒
+    BrandImitation,
+    /// 诱导下载
+    InducedDownload,
+}
+
+impl AsRef<str> for UrlSubType {
+    fn as_ref(&self) -> &str {
+        match self {
+            Self::Phishing => "钓鱼欺诈",
+            Self::BrandImitation => "品牌仿冒",
+            Self::InducedDownload => "诱导下载",
+        }
+    }
+}
+
+/// 文件子类型
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[serde(rename_all = "camelCase")]
+pub enum FileSubType {
+    /// 恶意文件HASH
+    MaliciousHash,
+}
+
+impl AsRef<str> for FileSubType {
+    fn as_ref(&self) -> &str {
+        match self {
+            Self::MaliciousHash => "恶意文件HASH",
+        }
+    }
+}
+
 /// 处置状态键名
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "camelCase")]
 pub enum StatusKey {
-    /// 是否已加入白名单
-    IsWhite,
-    /// 是否已加入黑名单
-    IsBlack,
-    /// 是否已上报
-    IsReport,
+    /// 不看已加入白名单
+    IgnoreWhite,
+    /// 不看已加入黑名单
+    IgnoreBlack,
+    /// 不看已上报
+    IgnoreReported,
 }
 
 /// 紧急程度
@@ -82,8 +182,8 @@ pub struct IntelligenceFilter {
     /// 结束时间
     pub end_time: DateTime<Utc>,
     
-    /// 情报来源
-    pub source: Option<SourceType>,
+    /// 情报来源，可选多个来源类型
+    pub sources: Option<Vec<SourceType>>,
     
     /// 情报类型
     pub intelligence_type: Option<HashMap<IntelligenceType, Vec<String>>>,
@@ -110,12 +210,12 @@ pub struct IntelligenceFilter {
 /// 情报处置状态 - 领域模型
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IntelligenceStatus {
-    /// 是否已加入白名单
-    pub is_white: bool,
-    /// 是否已加入黑名单
-    pub is_black: bool,
-    /// 是否已上报
-    pub is_report: bool,
+    /// 不看已加入白名单
+    pub ignore_white: bool,
+    /// 不看已加入黑名单
+    pub ignore_black: bool,
+    /// 不看已上报
+    pub ignore_reported: bool,
 }
 
 /// 基本信息 - 领域模型
@@ -171,8 +271,10 @@ pub struct Intelligence {
     pub status: IntelligenceStatus,
     /// 基本信息
     pub basic_info: BasicInfo,  
-    /// 贡献单位
-    pub contribution_unit: i32,
+    /// 受攻击行业
+    pub attacked_industry: i32,
+    /// 贡献行业
+    pub contribution_industry: String,
     /// 命中行业分布
     pub industry_distribution: Vec<IndustryDistribution>,
 } 

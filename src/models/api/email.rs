@@ -85,6 +85,55 @@ pub struct EmailResponse {
     pub sender: String,
     /// 收件人
     pub recipients: Vec<String>,
+    /// 邮件状态
+    pub status: String,
+}
+
+// 从领域模型转换
+impl From<Email> for EmailResponse {
+    fn from(email: Email) -> Self {
+        Self {
+            id: email.id,
+            timestamp: email.timestamp,
+            subject: email.subject,
+            sender: email.sender,
+            recipients: email.recipients,
+            status: email.status,
+        }
+    }
+}
+
+/// 关联邮件查询响应 - API模型
+#[derive(Debug, Serialize)]
+pub struct RelatedEmailsResponse {
+    /// 状态码
+    pub code: u32,
+    /// 总数
+    pub total: u32,
+    /// 邮件列表
+    pub data: Vec<EmailResponse>,
+}
+
+/// 邮件详情查询参数 - API模型
+#[derive(Debug, Deserialize)]
+pub struct EmailDetailQuery {
+    /// 邮件ID
+    pub email_id: String,
+}
+
+/// 邮件详情数据 - API模型
+#[derive(Debug, Serialize)]
+pub struct EmailDetailData {
+    /// 邮件ID
+    pub id: String,
+    /// 邮件时间
+    pub timestamp: DateTime<Utc>,
+    /// 主题
+    pub subject: String,
+    /// 发件人
+    pub sender: String,
+    /// 收件人
+    pub recipients: Vec<String>,
     /// 附件列表
     pub attachments: Vec<AttachmentResponse>,
     /// URL列表
@@ -98,7 +147,7 @@ pub struct EmailResponse {
 }
 
 // 从领域模型转换
-impl From<Email> for EmailResponse {
+impl From<Email> for EmailDetailData {
     fn from(email: Email) -> Self {
         Self {
             id: email.id,
@@ -115,13 +164,38 @@ impl From<Email> for EmailResponse {
     }
 }
 
-/// 关联邮件查询响应 - API模型
+/// 邮件详情响应 - API模型
 #[derive(Debug, Serialize)]
-pub struct RelatedEmailsResponse {
+pub struct EmailDetailResponse {
     /// 状态码
     pub code: u32,
-    /// 总数
-    pub total: u32,
-    /// 邮件列表
-    pub data: Vec<EmailResponse>,
+    /// 邮件详情
+    pub data: EmailDetailData,
+}
+
+/// 文件类型枚举
+#[derive(Debug, Deserialize, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum FileType {
+    /// 邮件EML
+    Eml,
+    /// 附件
+    Attachment,
+}
+
+/// 文件下载请求参数 - API模型
+#[derive(Debug, Deserialize)]
+pub struct DownloadFileRequest {
+    /// 文件ID (邮件ID或附件ID)
+    pub id: String,
+    /// 文件类型 (eml或attachment)
+    pub file_type: FileType,
+    /// 文件路径 (附件类型时需要)
+    pub file_path: Option<String>,
+    /// 是否加密
+    #[serde(default)]
+    pub encrypted: bool,
+    /// 加密密码 (当encrypted为true时需要)
+    #[serde(default)]
+    pub password: Option<String>,
 } 

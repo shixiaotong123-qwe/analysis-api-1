@@ -18,9 +18,9 @@ pub struct IntelligenceQueryParams {
     #[serde(rename = "end_time")]
     pub end_time: DateTime<Utc>,
     
-    /// 情报来源
-    #[serde(rename = "source")]
-    pub source: Option<SourceType>,
+    /// 情报来源，可选多个来源类型
+    #[serde(rename = "sources")]
+    pub sources: Option<Vec<SourceType>>,
     
     /// 情报类型
     /// 格式为: { "account": [], "domain": [], "url": [], "file": [] }
@@ -88,8 +88,10 @@ pub struct IntelligenceListItem {
     pub status: IntelligenceStatus,
     /// 基本信息
     pub basic_info: BasicInfo,  
-    /// 贡献单位
-    pub contribution_unit: i32,
+    /// 受攻击行业
+    pub attacked_industry: i32,
+    /// 贡献行业
+    pub contribution_industry: String,
     /// 命中行业分布
     pub industry_distribution: Vec<IndustryDistribution>,
 }
@@ -112,7 +114,8 @@ impl From<Intelligence> for IntelligenceListItem {
             latest_hits_time: intel.latest_hits_time,
             status: intel.status,
             basic_info: intel.basic_info,
-            contribution_unit: intel.contribution_unit,
+            attacked_industry: intel.attacked_industry,
+            contribution_industry: intel.contribution_industry,
             industry_distribution: intel.industry_distribution,
         }
     }
@@ -137,9 +140,9 @@ fn default_page_size() -> usize {
 /// 默认处置状态
 fn default_status() -> HashMap<StatusKey, bool> {
     let mut status = HashMap::new();
-    status.insert(StatusKey::IsWhite, false);
-    status.insert(StatusKey::IsBlack, false);
-    status.insert(StatusKey::IsReport, false);
+    status.insert(StatusKey::IgnoreWhite, false);
+    status.insert(StatusKey::IgnoreBlack, false);
+    status.insert(StatusKey::IgnoreReported, false);
     status
 }
 

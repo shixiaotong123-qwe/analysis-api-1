@@ -20,7 +20,7 @@ pub async fn list_intelligence(
     let filter = IntelligenceFilter {
         start_time: params.start_time,
         end_time: params.end_time,
-        source: params.source,
+        sources: params.sources,
         intelligence_type: params.intelligence_type,
         status: params.status,
         filter: params.filter,

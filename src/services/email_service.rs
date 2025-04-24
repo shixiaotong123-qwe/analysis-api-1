@@ -189,6 +189,67 @@ impl EmailService {
             Err(anyhow!("邮件未找到"))
         }
     }
+    
+    /// 下载文件（邮件EML或附件）
+    pub async fn download_file(&self, file_id: &str, is_eml: bool, file_path: Option<&str>, encrypt: bool, password: Option<&str>) -> Result<(Vec<u8>, String, String)> {
+        if is_eml {
+            info!("邮件服务: 下载邮件EML: email_id={}, 加密={}", file_id, encrypt);
+            
+            // 获取EML数据
+            let eml_data = self.download_email_eml(file_id).await?;
+            
+            // 获取邮件详情以确定文件名
+            let filename = match self.get_email_detail(file_id).await {
+                Ok(email) => format!("{}.eml", email.subject.replace(" ", "_")),
+                Err(_) => format!("email_{}.eml", file_id),
+            };
+            
+            // 确定内容类型
+            let content_type = "message/rfc822".to_string();
+            
+            // 如果需要加密，则加密数据
+            let final_data = if encrypt {
+                // 确保密码存在
+                let pwd = password.ok_or_else(|| anyhow!("需要加密但未提供密码"))?;
+                // 这里应该实现实际的加密逻辑，这里仅作模拟
+                info!("使用密码 '{}' 加密EML文件", pwd);
+                
+                // 模拟加密：实际项目中应使用如AES等算法进行正确加密
+                // 这里只是简单地在数据前面添加一个标记
+                let mut encrypted_data = Vec::from("ENCRYPTED:".as_bytes());
+                encrypted_data.extend_from_slice(&eml_data);
+                encrypted_data
+            } else {
+                eml_data
+            };
+            
+            Ok((final_data, filename, content_type))
+        } else {
+            // 处理附件下载
+            let path = file_path.ok_or_else(|| anyhow!("下载附件时必须提供文件路径"))?;
+            info!("邮件服务: 下载附件: attachment_id={}, file_path={}, 加密={}", file_id, path, encrypt);
+            
+            // 获取附件数据
+            let (attachment_data, filename, content_type) = self.download_attachment(file_id, path).await?;
+            
+            // 如果需要加密，则加密数据
+            let final_data = if encrypt {
+                // 确保密码存在
+                let pwd = password.ok_or_else(|| anyhow!("需要加密但未提供密码"))?;
+                // 这里应该实现实际的加密逻辑，这里仅作模拟
+                info!("使用密码 '{}' 加密附件", pwd);
+                
+                // 模拟加密
+                let mut encrypted_data = Vec::from("ENCRYPTED:".as_bytes());
+                encrypted_data.extend_from_slice(&attachment_data);
+                encrypted_data
+            } else {
+                attachment_data
+            };
+            
+            Ok((final_data, filename, content_type))
+        }
+    }
 
     // 保留此方法框架，供后续实现
     #[allow(dead_code)]

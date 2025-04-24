@@ -78,9 +78,9 @@ impl IntelligenceService {
             first_found_time: now - Duration::days(30),
             latest_hits_time: now,
             status: IntelligenceStatus {
-                is_white: false,
-                is_black: true,
-                is_report: true,
+                ignore_white: false,
+                ignore_black: true,
+                ignore_reported: true,
             },
             basic_info: BasicInfo {
                 file_name: None,
@@ -88,7 +88,8 @@ impl IntelligenceService {
                 file_size: None,
                 file_type: None,
             },
-            contribution_unit: 3,
+            attacked_industry: 3,
+            contribution_industry: "安全厂商".to_string(),
             industry_distribution: vec![
                 IndustryDistribution {
                     industry_name: "金融".to_string(),
